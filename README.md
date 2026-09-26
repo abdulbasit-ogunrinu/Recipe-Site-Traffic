@@ -11,9 +11,9 @@ homepage to drive traffic?** It profiles a recipe catalogue, cleans and explores
 classification models against a business recall target, and ships a predictor for pre-screening new
 recipes.
 
-This README is written so you can get the full picture **without opening the app** — every number,
-chart and control is explained below. If you'd rather explore it yourself, the
-[dashboard tour](#dashboard-tour) tells you exactly what you're looking at, section by section.
+This README covers the full project — the business question, the data, the cleaning and modelling
+pipeline, the results, and the honest limitations — so you can get the complete picture **without
+opening the app**.
 
 ---
 
@@ -21,13 +21,7 @@ chart and control is explained below. If you'd rather explore it yourself, the
 
 - [Key findings](#key-findings)
 - [The business question](#the-business-question)
-- [Dashboard tour](#dashboard-tour)
-  - [Sidebar and top banner](#sidebar-and-top-banner)
-  - [1 · Overview Dashboard](#1--overview-dashboard)
-  - [2 · Data & EDA](#2--data--eda)
-  - [3 · Business Insights](#3--business-insights)
-  - [4 · Model Performance](#4--model-performance)
-  - [5 · Predictor](#5--predictor)
+- [What's in the app](#whats-in-the-app)
 - [Metric glossary](#metric-glossary)
 - [How it works](#how-it-works)
 - [Model card](#model-card)
@@ -95,172 +89,24 @@ high-traffic recipes. Precision is reported but deliberately *not* optimised, be
 miss outweighs the cost of a false flag. The sidebar shows this target as a live progress bar, turning
 green when the shipped model clears it.
 
-## Dashboard tour
+## What's in the app
 
-The app is a single page with five sections, switched from the sidebar. All charts are Plotly
-(interactive — hover for values, click legends to filter, drag to zoom). The whole page re-scopes
-whenever a control changes.
+Five sections, switched from the sidebar. All charts are interactive Plotly — hover for values, click
+legends to filter, drag to zoom — and the ⬇ **Export PDF** button in the top banner prints the current
+view (A4 landscape) via the browser print dialog.
 
-### Sidebar and top banner
+| Section | What it gives you |
+| --- | --- |
+| **📊 Overview Dashboard** | Category / servings / traffic filters, a 7-card KPI ribbon (traffic rate, recall, precision, AUC, catalogue size, categories, median calories) and the core charts: high-traffic rate by category, traffic split, calorie-band mix, category scorecard, rate across calorie bands, and live intelligence alerts. |
+| **🔍 Data & EDA** | Cleaning audit (947 raw → 874 clean, 73 outliers dropped, 52 rows imputed), feature distributions, recipes per category, high-vs-low nutrition averages, notched calorie box plots, and mean nutrition by category. |
+| **💡 Business Insights** | Baseline vs best vs worst category and the spread between them, popularity by serving size, written key findings and actionable recommendations. |
+| **🤖 Model Performance** | Both models side by side across all six metrics against the 0.80 recall target, confusion matrices, ROC curves, Random Forest feature importances, and the full metrics table. |
+| **🎯 Predictor** | Enter a recipe's nutrition, servings and category to get a High/Low verdict, a high-traffic probability (≥ 50% → High Traffic), a gauge of the same probability, and a plain-English interpretation with improvement suggestions. |
 
-**Sidebar (top to bottom)**
+The sidebar carries a live **BUSINESS TARGET** card showing the 0.80 recall goal, the shipped model's
+actual recall, and whether it is on target.
 
-- **Brand block** — the Tasty Bytes logo card.
-- **NAVIGATE** — radio buttons for the five sections.
-- **BUSINESS TARGET card** — the 0.80 recall target with a progress bar showing the shipped model's
-  actual recall and a status line (`✓ Status: On Target` / `⚠ Status: Below Target`). This is the
-  single number the project is judged on.
-- **Footer** — source dataset name and the models in play.
-
-Closing the sidebar leaves a floating **orange ⏵ button** in the top-left of the header to reopen it.
-
-**Top banner** — always visible above the content: title, dataset pills (recipe count, category
-count, recall target) and a **model status badge**. On the right, the **⬇ Export PDF** button calls
-`window.print()` with a dedicated print stylesheet (A4 landscape, sidebar and chrome hidden, dark
-theme preserved via `print-color-adjust: exact`, cards and tables kept off page breaks). Choose
-*Save as PDF* as the print destination.
-
-### 1 · Overview Dashboard
-
-The executive view. Everything responds to three filters.
-
-**Filters (top row)**
-
-| Filter | Options | Effect |
-| --- | --- | --- |
-| Category · Segment | All + 11 categories | Restricts to one food segment |
-| Servings · Period | All, 2, 4, 6 | Restricts to a serving-size group |
-| Traffic · Region | All, High, Low | Restricts to one outcome class |
-
-If a combination returns nothing, the app warns you and falls back to the full catalogue rather than
-rendering empty panels.
-
-**KPI ribbon — 7 ring cards.** Each ring is filled to the share it represents; the sub-line gives
-context.
-
-| Card | What it measures | How to read it |
-| --- | --- | --- |
-| High-Traffic Rate | Share of the current view labelled high | The headline outcome. Its delta is percentage points vs the 60.0% catalogue baseline |
-| Model Recall | Shipped model's recall | Green if ≥ 80% target, amber if not |
-| Precision | Share of flags that were correct | The cost side of the recall trade-off |
-| ROC AUC | Discriminative power, 0–1 | How well the model ranks high above low overall; 0.850 is strong |
-| Total Recipes | Rows in the current view | Sub-line shows share of the 874-recipe catalogue |
-| Categories | Distinct categories in view | Sub-line shows share of 11 |
-| Median Calories | Median kcal per recipe | Sub-line notes it is post-outlier-removal |
-
-**Charts**
-
-1. **High-Traffic Rate by Category** — bars per category for the current view against the catalogue
-   baseline. Orange bars beat the baseline; cyan bars fall short. This is the chart that answers
-   "where should we spend homepage slots".
-2. **Traffic Split** — donut of high vs low in the view, with two progress bars underneath giving the
-   raw counts.
-3. **Calorie Bands by Category** — 100% stacked bars splitting each category into light / moderate /
-   rich calorie bands, so you can see *why* a category over- or under-performs.
-4. **Category Scorecard** — a sortable-feeling table: category, recipe count, high-traffic rate, ▲/▼
-   movement in percentage points vs baseline, and share of the view.
-5. **Traffic Rate across Calorie Bands** — line over sequential calorie bands with the peak band
-   marked by an orange diamond. Shows whether there's a sweet spot in calories.
-6. **High-Traffic Share by Category** — top-5 progress bars of where the high-traffic recipes in the
-   view actually come from, followed by three live **Intelligence Alerts**: the view's leading
-   category, the one to deprioritise, and the model's recall status.
-
-**Bottom strip** — five one-line answers: current run rate, top category, fastest growth vs
-baseline, model recall status, and a watchlist category.
-
-### 2 · Data & EDA
-
-Provenance and exploration — the "can I trust this?" page.
-
-**Cleaning audit cards:** Raw Rows (947) · Cleaned Rows (874) · Outliers Removed (73, 7.7%, any
-feature with |z| ≥ 3) · Missing Imputed (52 rows, category-median fill on nutrition).
-
-**Charts**
-
-- **Feature Distributions** — histogram of a selectable numeric feature (calories / carbohydrate /
-  sugar / protein). Look for skew and heavy tails; the calories distribution runs 0.14 → 1,724 kcal
-  with a median of 291.
-- **Recipes per Category** — counts per category, largest first (Breakfast 105 → One Dish Meal 61).
-- **Nutrition Averages: High vs Low Traffic** — grouped bars of mean nutrient values split by class.
-  High-traffic recipes average 418 kcal / 32.5 g carbs / 6.7 g sugar / 20.3 g protein against
-  377 / 28.3 / 8.0 / 20.4 for low — **more calories, less sugar**, and effectively identical protein.
-- **Calorie Distribution by Traffic Type** — notched box plots. Overlapping notches mean the median
-  difference is not statistically significant at conventional levels; the visible rightward shift of
-  the high-traffic box is the calorie effect.
-- **Mean Nutrition Values by Category** — grouped bars comparing all four nutrients across every
-  category.
-
-### 3 · Business Insights
-
-The "so what" page, with no model machinery in the way.
-
-**Cards:** Baseline Rate (60.0%) · Best Category (Vegetable) · Weakest Category (Beverages) ·
-Category Spread (93.1 pp, best minus worst — the headline measure of how much category choice matters).
-
-**Charts**
-
-- **High-Traffic Rate by Category** — orange bars exceed the dotted baseline line; this is the
-  same ranking as the table above, sorted.
-- **Popularity Rate by Serving Size** — 1, 2, 4 and 6 servings against the baseline. 2–4 serving
-  recipes skew higher, which is the basis for the "small groups" recommendation.
-
-**Key Findings** — homepage prioritisation (lead with Vegetable), review Beverages, the 2–4 serving
-sweet spot, and a model-confidence statement.
-
-**Actionable Decisions** — pre-screen new recipes with the predictor, monitor recall and precision
-monthly and retrain as data accumulates, diversify the homepage across high-performing categories,
-and A/B test presentation for weak categories before writing them off.
-
-### 4 · Model Performance
-
-Everything needed to judge whether the model is fit to deploy.
-
-**Cards:** LR Recall · LR Precision · LR ROC AUC · RF Recall · RF ROC AUC.
-
-**Performance Comparison** — grouped bars of all six metrics for both models, with a dotted line at
-80% marking the recall target. The shipped model is the one that clears it.
-
-**Confusion Matrix tab** — pick a model, then read a 2×2 heatmap (rows = actual, columns = predicted).
-For Logistic Regression on 175 held-out rows: 89 true positives, 49 true negatives, 21 false
-positives, 16 false negatives. The 16 in the bottom-left cell are the recipes the model would have
-wrongly passed over — the errors the 0.80 target exists to minimise.
-
-**ROC Curves tab** — true-positive rate against false-positive rate at every threshold, with the
-diagonal drawn in. The further the curve hugs the top-left, the better the ranking; AUC 0.850 for LR
-vs 0.821 for RF.
-
-**Feature Importance** — top 10 Random Forest predictors, teal → orange. Nutrition features
-dominate, and `category_beverages` / `category_vegetable` show up as the strongest categorical
-effects.
-
-**Metrics Table** — the full scorecard for both models, heat-mapped per row so the better value in
-each pair lights up.
-
-### 5 · Predictor
-
-Pre-screen a recipe before you spend a homepage slot on it.
-
-**Inputs** (a form, so nothing recomputes until you press **▶ Run Prediction**): Calories (0–3,000),
-Carbohydrate (0–500 g), Sugar (0–300 g), Protein (0–200 g), Servings (1 / 2 / 4 / 6), Category (all
-11). Defaults are the catalogue medians.
-
-**Outputs**
-
-- **Prediction card** — `High Traffic` or `Low Traffic`, with the model's confidence in that call.
-- **High-Traffic Probability** — the raw probability, with the decision rule stated: **≥ 50% → High
-  Traffic**.
-- **Gauge** — the same probability as an arc, with an orange threshold line at the 50% decision
-  boundary.
-- **Interpretation** — plain-English operational guidance: *Recommend for Homepage* with the
-  probability restated, the *Category Signal* (that category's own high-traffic rate, so you can see
-  whether the model is leaning on category or nutrition), and either a *Headroom* note or an
-  *Improvement Suggestion* telling you which direction to move the nutrition numbers.
-
-**How to use it as a sensitivity tool.** Leave everything at the defaults and press the button —
-that's the median recipe. Then move one variable at a time and watch the probability. Category is
-usually the strongest lever (try Beverages vs Vegetable at identical nutrition). Because the model is
-linear in the nutrition features, its response to those is smooth and monotonic; only the category
-dummy produces jumps.
+---
 
 ## Metric glossary
 
