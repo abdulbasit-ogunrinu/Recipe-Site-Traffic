@@ -1,0 +1,6 @@
+streamlit>=1.64,<2   # 1.64+ required for st.html(unsafe_allow_javascript=True)
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.5
+scipy>=1.13
+plotly>=5.24
