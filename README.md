@@ -5,9 +5,8 @@ feature on the homepage to drive traffic?** It profiles the recipe catalogue, cl
 data, and trains classification models that score a recipe's likelihood of becoming a high-traffic
 page.
 
-<!-- Deploy badge: after going live on Streamlit Community Cloud, replace YOUR_USERNAME below
-     and confirm the URL matches https://<user>-<repo>.streamlit.app/ -->
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://YOUR_USERNAME-recipe-site-traffic.streamlit.app)
+<!-- Deploy badge: the link below resolves once the app is live on Streamlit Community Cloud -->
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://abdulbasit-ogunrinu-recipe-site-traffic.streamlit.app)
 
 ---
 
@@ -39,9 +38,10 @@ that is trained on load and cached with `@st.cache_data`.
 
 ## Live demo
 
-**[→ Open the deployed app](https://YOUR_USERNAME-recipe-site-traffic.streamlit.app)**
+**[→ Open the deployed app](https://abdulbasit-ogunrinu-recipe-site-traffic.streamlit.app)**
 
-> Replace the placeholder URL above with your deployed Streamlit Community Cloud address.
+> This link resolves once the app is deployed — see
+> [Deploying to Streamlit Community Cloud](#deploying-to-streamlit-community-cloud).
 
 To run it locally instead:
 
@@ -127,8 +127,8 @@ Top Random Forest features: `protein` (0.169), `calories` (0.152), `carbohydrate
 Requires Python 3.11+.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/recipe-site-traffic.git
-cd recipe-site-traffic
+git clone https://github.com/abdulbasit-ogunrinu/Recipe-Site-Traffic.git
+cd Recipe-Site-Traffic
 
 python -m venv .venv
 # Windows
@@ -151,11 +151,11 @@ dependency.
 1. **Push the repo to GitHub** (make it public — the free Streamlit Community Cloud tier requires it).
 2. Go to <https://share.streamlit.io> and sign in with GitHub.
 3. Click **New app → Deploy to Community Cloud**, then authorise Streamlit to access your repositories.
-4. Select `YOUR_USERNAME/recipe-site-traffic` and branch `main`. Leave the entrypoint as
+4. Select `abdulbasit-ogunrinu/Recipe-Site-Traffic` and branch `main`. Leave the entrypoint as
    `app.py` and the deploy path empty.
 5. Click **Deploy**. The app builds in ~2 minutes at
-   `https://YOUR_USERNAME-recipe-site-traffic.streamlit.app`.
-6. Copy that URL into the *Live demo* link and the badge at the top of this README.
+   `https://abdulbasit-ogunrinu-recipe-site-traffic.streamlit.app`.
+6. Copy that URL into the *Live demo* link and the badge at the top of this README if it differs.
 
 There are no secrets, API keys or external services to configure — the dataset ships with the repo.
 
